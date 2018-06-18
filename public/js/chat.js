@@ -1,5 +1,5 @@
 
-let socket = io.connect('http://192.168.0.181:4000/');
+let socket = io.connect('http://127.0.0.1:4000/');
 
 const output = document.getElementById('output'),
       outputwin = document.getElementById('output-window'),
