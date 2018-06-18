@@ -2,10 +2,10 @@
 let socket = io.connect('http://127.0.0.1:4000/');
 
 const output = document.getElementById('output'),
-      outputwin = document.getElementById('output-window'),
-      name = document.getElementById('name'),
-      message = document.getElementById('message'),
-      btn = document.getElementById('send');
+    outputwin = document.getElementById('output-window'),
+    name = document.getElementById('name'),
+    message = document.getElementById('message'),
+    btn = document.getElementById('send');
 
 
 btn.addEventListener('click', () => {
@@ -18,27 +18,27 @@ btn.addEventListener('click', () => {
 });
 
 
-socket.on('chat' , data => {
+socket.on('chat', data => {
 
     let today = new Date(),
-            h = doubleCheck(today.getHours()),
-            m = doubleCheck(today.getMinutes()),
-            meclass = '';
+        h = doubleCheck(today.getHours()),
+        m = doubleCheck(today.getMinutes()),
+        meclass = '';
 
-    if(data.isMe == true) {
+    if (data.isMe == true) {
         meclass = 'itsme';
-    }  
-    
-    output.innerHTML += '<p>['+ h + ':' + m + '] <strong class="' + meclass + '">' + data.name + ': </strong>' + data.message + '<p>';
+    }
+
+    output.innerHTML += '<p>[' + h + ':' + m + '] <strong class="' + meclass + '">' + data.name + ': </strong>' + data.message + '<p>';
     updateScroll();
 });
 
 
 function doubleCheck(dateObject) {
 
-    if(dateObject < 10){
+    if (dateObject < 10) {
         return "0" + dateObject;
-    } 
+    }
     return dateObject;
 
 }
@@ -46,6 +46,6 @@ function doubleCheck(dateObject) {
 function updateScroll() {
 
     outputwin.scrollTop = outputwin.scrollHeight;
-    
+
 }
 

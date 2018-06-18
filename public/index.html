@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,36 +10,40 @@
     <link rel="stylesheet" href="/css/style.css">
     <title>Blackjack duel + chat</title>
 </head>
+
 <body>
 
     <div class="chat-container">
         <div id="output-window">
             <div id="output"></div>
         </div>
-        <input id="name" type="text" placeholder="NAME"><br>
-        <input id="message" type="text" placeholder="MESSAGE"><br>
+        <input id="name" type="text" placeholder="NAME">
+        <br>
+        <input id="message" type="text" placeholder="MESSAGE">
+        <br>
         <button id="send">SEND</button>
     </div>
 
     <div class="game-container">
-        
+
         <p class="info" id="enemyInfo"></p>
         <div id="enemyCards"></div>
         <p class="info" id="playerInfo"></p>
         <div id="playerCards"></div>
 
         <div class="button-window">
-            <button id="join">JOIN</button>    
-            <button id="leave">LEAVE</button>  
-            <button id="hit">HIT</button>  
-            <button id="stand">STAND</button>  
+            <button id="join">JOIN</button>
+            <button id="leave">LEAVE</button>
+            <button id="hit">HIT</button>
+            <button id="stand">STAND</button>
         </div>
 
         <p id="timeLeft">TIME LEFT: </p>
     </div>
-    
+
 
     <script src="/js/chat.js"></script>
     <script src="/js/blackjackduel.js"></script>
 </body>
+
 </html>
