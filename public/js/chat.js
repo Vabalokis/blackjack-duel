@@ -34,14 +34,18 @@ socket.on('chat' , data => {
 });
 
 
-function doubleCheck(dateObject){
+function doubleCheck(dateObject) {
+
     if(dateObject < 10){
         return "0" + dateObject;
     } 
     return dateObject;
+
 }
 
-function updateScroll(){
+function updateScroll() {
+
     outputwin.scrollTop = outputwin.scrollHeight;
+    
 }
 

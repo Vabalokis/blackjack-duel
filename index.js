@@ -64,13 +64,13 @@ class Deck {
     }
 
 
-    generateShoe(){
+    generateShoe() {
        
         for(let i = 0; i < this.numOfDecks ; i++) {
             let newDeck = this.generateDeck();
-            this.shuffletimes(newDeck,5);
+            this.shuffletimes(newDeck, 5);
             this.shoe = this.shoe.concat(newDeck);
-            this.shuffletimes(this.shoe,5);
+            this.shuffletimes(this.shoe, 5);
         }
         
     }
@@ -96,48 +96,52 @@ class Deck {
         }
 
 
-    shuffletimes(arr,times){
-
+    shuffletimes(arr,times) {
             for(let i = 0 ; i < times ; i++)
             {
                 this.shuffle(arr);
             }
-        
         }
-
 
     clearCards() {
 
-            this.shoe = [];
-            
+            this.shoe = [];   
+
         }
 
+    takeCard() {
 
-    takeCard(){
-                return this.shoe.pop();
+      return this.shoe.pop();
+
         }
 
     takeShoe() {
-                return this.shoe;
+
+      return this.shoe;
+
     }
 
 }
 
 function isPlaying(id) {
-    for(let i=0;i<players.length;i++) {
-        if(players[i] == id){
+
+    for(let i = 0; i < players.length ;i++) {
+        if(players[i] == id) {
             return true;
         }
     }
+
 }
 
 function removePlayer(id) {
-    for (let i=players.length-1; i>=0; i--) {
+
+    for (let i = players.length-1; i >= 0; i--) {
         if (players[i] === id) {
             players.splice(i, 1);
             break;  
         }
     }
+
 }
 
 function refreshRoomButtons() {
@@ -154,10 +158,13 @@ function refreshRoomButtons() {
 }
 
 function checkforPlayers(socket) {
+
     if(players.length == 2) gameStart(socket);
+
 }
 
 function redrawCards(end) {
+
         clearCardsVisual(); 
         if(!end) {
         // Sending card data to player1
@@ -205,11 +212,11 @@ function redrawCards(end) {
             endresult: true
         }); 
         }
-
-        
+       
 }
 
 function redrawInfo(end) {
+
     if(!end) {
         io.to(player1.getID()).emit('redrawInfo' , {
             enemycardvalue: cehckHandValue(player2.getHand().slice(1)),
@@ -253,33 +260,42 @@ function redrawInfo(end) {
 }
 
 function gameStart(socket) {
+
     player1 = new Player(players[0]);
     player2 = new Player(players[1]);
     deck = new Deck(5);
     deck.generateShoe();
-    player1.AddaCard(deck.takeCard());
-    player2.AddaCard(deck.takeCard());
-    player1.AddaCard(deck.takeCard());
-    player2.AddaCard(deck.takeCard());
-    
+    playerTakesAcard();
+    playerTakesAcard();
     redrawCards(false);
     redrawInfo(false); 
     io.emit('gamestart', {});
     setTimeout(() => {
         endGame(); 
     }, 16000);
-    console.log(player1,player2);
+
+}
+
+function playerTakesAcard(){
+
+    player1.AddaCard(deck.takeCard());
+    player2.AddaCard(deck.takeCard());
+
 }
 
 function gameStop() {
+
     player1 = null;
     player2 = null;
     players = [];
     refreshRoomButtons();
+
 }
 
 function clearCardsVisual() {
+
     io.emit('clear' , {});
+
 }
 
 function showending() {
@@ -287,7 +303,7 @@ function showending() {
     pl1hnd = cehckHandValue(player1.getHand());
     pl2hnd = cehckHandValue(player2.getHand());
 
-    if (pl1hnd == pl2hnd) {
+    if (pl1hnd == pl2hnd) { // 0 - lost ; 1 - won
         endingDes(0 , 0);
     } else
     if(pl1hnd > 21 && pl2hnd > 21) {
@@ -310,7 +326,8 @@ function showending() {
 }
 
 
-function endingDes(player11 , player22) {
+function endingDes(player11, player22) {
+
     io.to(player1.getID()).emit('end' , {
           enemy: player22,
           player: player11
@@ -330,7 +347,7 @@ function endGame() {
     showending();
     redrawInfo(true);
     redrawCards(true);
-    setTimeout(()=> {
+    setTimeout( () => {
         player1 = null;
         player2 = null;
         players = [];
@@ -338,10 +355,9 @@ function endGame() {
         clearCardsVisual();
         refreshRoomButtons();     
     }, 10000);
-    console.log('end!');  
 }
 
-function clearjoinRoom(room, room2 , namespace = '/') {
+function clearjoinRoom(room, room2, namespace = '/') {
     let roomObj = io.nsps[namespace].adapter.rooms[room];
     if (roomObj) {
         // now kick everyone out of this room
@@ -351,88 +367,6 @@ function clearjoinRoom(room, room2 , namespace = '/') {
         })
     }
 }
-
-
-
-io.on('connection' , socket => {
-
-    console.log('made socket connection with ' + socket.id);
-
-
-     //Joining waiting room initially
-
-    socket.join('waiting');
-
-    if(players.length == 2) {
-        redrawCards(false);
-        redrawInfo(false);
-    }
-    //Listening for chat event
-
-    socket.on('chat' , data => {
-        console.log(data.name + ' says: ' + data.message);
-        //Sending message to yourself with isMe == true
-        socket.emit('chat', data);
-        //Setting isMe to false and then sending data to all other sockets
-        data.isMe = false;
-        socket.broadcast.emit('chat' , data);
-    });
-
-     //Sending button status information
-
-        socket.emit('buttons', {
-            players: players.length,
-            isPlaying: isPlaying(socket.id) //isPlaying(socket.id)
-        } );
-
-     //Listening for blackjack events
-    
-        socket.on('gameEvent' , data => {
-        console.log(players);
-
-                if(data.status == 'join' && players.length < 2) {
-                    console.log(data.id + ' chose to join the game');
-                    socket.leave('waiting');
-                    socket.join('game');
-                    players.push(socket.id);
-                    console.log(players);
-                    refreshRoomButtons();
-                    checkforPlayers(socket);
-                }
-
-                if(data.status == 'leave') {
-                    console.log(data.id + ' chose to leave the game');
-                    gameStop();
-                    socket.leave('game');
-                    socket.join('waiting');
-                    removePlayer(socket.id);
-                    console.log(players);
-                    refreshRoomButtons();
-                    
-                }
-
-                if(data.status == 'hit') {
-                    console.log(data.id + ' chose to take one card');
-                    if(data.id == player1.getID()) {
-                       player1.AddaCard(deck.takeCard());
-                    } else {
-                       player2.AddaCard(deck.takeCard()); 
-                    }
-                    io.emit('clear', {});
-                    redrawCards(false);
-                    redrawInfo(false);
-                }
-
-                if(data.status == 'stand') {
-                    console.log(data.id + ' chose to stand');
-
-                    
-                }
-
-            });
-
-
-});
 
 
 function checkCardValue(card){
@@ -487,7 +421,6 @@ function checkCardValue(card){
     
     }
 
-
     function cehckHandValue(hand){
 
         let value = 0;
@@ -503,4 +436,82 @@ function checkCardValue(card){
                 value += currentCardValue ;
             }
         return value ;
-        }
+    }
+
+
+
+io.on('connection' , socket => {
+
+    console.log('made socket connection with ' + socket.id);
+
+     //Joining waiting room initially
+
+    socket.join('waiting');
+
+    if(players.length == 2) {
+        redrawCards(false);
+        redrawInfo(false);
+    }
+
+    //Listening for chat event
+
+    socket.on('chat' , data => {
+        //Sending message to yourself with isMe == true
+        socket.emit('chat', data);
+        //Setting isMe to false and then sending data to all other sockets
+        data.isMe = false;
+        socket.broadcast.emit('chat' , data);
+    });
+
+     //Sending button status information
+
+        socket.emit('buttons', {
+            players: players.length,
+            isPlaying: isPlaying(socket.id) //isPlaying(socket.id)
+        } );
+
+     //Listening for blackjack events
+    
+        socket.on('gameEvent' , data => {
+
+                if(data.status == 'join' && players.length < 2) {
+                    socket.leave('waiting');
+                    socket.join('game');
+                    players.push(socket.id);
+                    refreshRoomButtons();
+                    checkforPlayers(socket);
+                }
+
+                if(data.status == 'leave') {
+                    gameStop();
+                    socket.leave('game');
+                    socket.join('waiting');
+                    removePlayer(socket.id);
+                    refreshRoomButtons();
+                    
+                }
+
+                if(data.status == 'hit') { 
+                    if(data.id == player1.getID()) {
+                       player1.AddaCard(deck.takeCard());
+                    } else {
+                       player2.AddaCard(deck.takeCard()); 
+                    }
+                    io.emit('clear', {});
+                    redrawCards(false);
+                    redrawInfo(false);
+                }
+
+                if(data.status == 'stand') {
+                    
+
+                    
+                }
+
+            });
+
+
+});
+
+
+

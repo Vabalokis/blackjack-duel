@@ -107,6 +107,7 @@ socket.on('redrawCards', data => {
 });
 
 socket.on('redrawInfo', data => {
+      
       if(data.waitingroom && !data.endresult){ 
             enemyInfo.innerHTML = 'PLAYER 2 CARD VALUE: X + ' + data.enemycardvalue;
            playerInfo.innerHTML = 'PLAYER 1 CARD VALUE: X + ' + data.playercardvalue;
@@ -133,10 +134,12 @@ socket.on('redrawInfo', data => {
 
 
 function myTimer() {
+
     document.getElementById("timeLeft").innerHTML = 'TIME LEFT: ' + time--;
     if(time  == -1) {
       clearInterval(myVar);
     }
+
 }
 
 socket.on('clear' , () => {
@@ -145,55 +148,72 @@ socket.on('clear' , () => {
 })
 
 
-function showFacedDown(position){
+function showFacedDown(position) {
+
       let img = document.createElement("img");
       img.src = "img/cards/Different-BikeBack.png";
       img.width = 90;
       img.height = 140;
       img.id = "cardImage";
       document.getElementById(position).appendChild(img);
+
 }
 
 function disableButton(elem) {
+
     elem.disabled = true;
     elem.style.background = 'grey';
     elem.style.cursor = 'default';
+
 }
 
 function enableButton(elem) {
+
     elem.disabled = false;
     elem.style.background = 'rgba(76, 76, 216, 0.95)';
     elem.style.cursor = 'pointer';
+
 }
 
 function showWinner(elem) {
+
       elem.style.background = 'rgba(126, 255, 51, 0.658)';
+
 }
 
 function showLoser(elem) {
+
       elem.style.background = 'rgba(255, 35, 35, 0.753)';
+
 }
 
 function showTie(elem) {
+
       elem.style.background = 'rgba(251, 255, 0, 0.733)';
+
 }
 
 function revertshow() {
+
       playerCards.style.background = 'rgba(206, 206, 206 , 0.95)';
       enemyCards.style.background = 'rgba(232, 232, 232 , 0.95)';
+
 }
 
 
-function displayHand(hand , position){
+function displayHand(hand, position){
+
       if(Array.isArray(hand)) {
        for(let i = 0 ; i < hand.length ; i++){
            imageShow(hand[i] , position);
         } 
       } else
       imageShow(hand , position);
+
 }
   
-function imageShow (card , position) {
+function imageShow (card, position) {
+
       let img = document.createElement("img");
       img.src = checkSrc(card);
       img.width = 90;
@@ -201,33 +221,34 @@ function imageShow (card , position) {
       img.id = "cardImage";
       //img.style.filter = "alpha(opacity = 0)";
       document.getElementById(position).appendChild(img);
+      
   }
   
   
-  function checkSrc(card){
+  function checkSrc(card) {
       let value; 
       switch (card.charAt(1)){
       
       case "D":
-              value = checkCard(card,"diamonds");
+              value = checkCard(card, "diamonds");
               break;
       case "C":
-              value = checkCard(card,"clubs");
+              value = checkCard(card, "clubs");
               break;
       case "S":
-              value = checkCard(card,"spades");
+              value = checkCard(card, "spades");
               break;
       case "H":
-              value = checkCard(card,"hearts");
+              value = checkCard(card, "hearts");
               break;
          } 
       return value; 
       }
   
   
-      function checkCard(card,type){
+      function checkCard(card, type) {
           let value; 
-          switch (card.charAt(0)){
+          switch (card.charAt(0)) {
           
           case "1":
                   value = "img/cards/ace_of_" + type + ".png";
