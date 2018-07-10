@@ -26,8 +26,8 @@ const galvos = ["0D", "0H", "0C", "0S",
 
 const tuzai = ["1D", "1H", "1C", "1S"];
 
-let player1, player2;
-let players = [];
+let player1, player2,
+    players = [];
 
 
 class Player {
@@ -52,49 +52,39 @@ class Player {
 
 class Deck {
 
-
     constructor(numOfDecks) {
         this.numOfDecks = numOfDecks; // Setting up how many decks should be in the shoe.
-        this.shoe = [];
+        this.shoe       = [];
     }
-
 
     generateDeck() {
         return skaiciai.concat(galvos).concat(tuzai);
     }
-
 
     generateShoe() {
 
         for (let i = 0; i < this.numOfDecks; i++) {
             let newDeck = this.generateDeck();
             this.shuffletimes(newDeck, 5);
-            this.shoe = this.shoe.concat(newDeck);
+            this.shoe   = this.shoe.concat(newDeck);
             this.shuffletimes(this.shoe, 5);
         }
 
     }
 
-
     shuffle(array) {
         let currentIndex = array.length, temporaryValue, randomIndex;
-
-        // While there remain elements to shuffle...
         while (0 !== currentIndex) {
 
-            // Pick a remaining element...
             randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex -= 1;
 
-            // And swap it with the current element.
             temporaryValue = array[currentIndex];
             array[currentIndex] = array[randomIndex];
             array[randomIndex] = temporaryValue;
         }
-
         return array;
     }
-
 
     shuffletimes(arr, times) {
         for (let i = 0; i < times; i++) {
@@ -103,26 +93,20 @@ class Deck {
     }
 
     clearCards() {
-
         this.shoe = [];
-
     }
 
     takeCard() {
-
         return this.shoe.pop();
-
     }
 
     takeShoe() {
-
         return this.shoe;
-
     }
 
 }
 
-function isPlaying(id) {
+const isPlaying = (id) => {
 
     for (let i = 0; i < players.length; i++) {
         if (players[i] == id) {
@@ -132,7 +116,7 @@ function isPlaying(id) {
 
 }
 
-function removePlayer(id) {
+const removePlayer = (id) => {
 
     for (let i = players.length - 1; i >= 0; i--) {
         if (players[i] === id) {
@@ -143,26 +127,26 @@ function removePlayer(id) {
 
 }
 
-function refreshRoomButtons() {
+const refreshRoomButtons = () =>  {
 
     io.to('waiting').emit('buttons', {
-        players: players.length,
+        players:   players.length,
         isPlaying: false
     });
     io.to('game').emit('buttons', {
-        players: players.length,
+        players:   players.length,
         isPlaying: true
     });
 
 }
 
-function checkforPlayers(socket) {
+const checkforPlayers = (socket) => {
 
     if (players.length == 2) gameStart(socket);
 
 }
 
-function redrawCards(end) {
+const redrawCards = (end) => {
 
     clearCardsVisual();
     if (!end) {
@@ -214,7 +198,7 @@ function redrawCards(end) {
 
 }
 
-function redrawInfo(end) {
+const redrawInfo = (end) => {
 
     if (!end) {
         io.to(player1.getID()).emit('redrawInfo', {
@@ -258,11 +242,11 @@ function redrawInfo(end) {
 
 }
 
-function gameStart(socket) {
+const gameStart = (socket) => {
 
     player1 = new Player(players[0]);
     player2 = new Player(players[1]);
-    deck = new Deck(5);
+    deck    = new Deck(5);
     deck.generateShoe();
     playerTakesAcard();
     playerTakesAcard();
@@ -275,14 +259,14 @@ function gameStart(socket) {
 
 }
 
-function playerTakesAcard() {
+const playerTakesAcard = () => {
 
     player1.AddaCard(deck.takeCard());
     player2.AddaCard(deck.takeCard());
 
 }
 
-function gameStop() {
+const gameStop = () => {
 
     player1 = null;
     player2 = null;
@@ -291,13 +275,13 @@ function gameStop() {
 
 }
 
-function clearCardsVisual() {
+const clearCardsVisual = () => {
 
     io.emit('clear', {});
 
 }
 
-function showending() {
+const showending = () => {
 
     pl1hnd = cehckHandValue(player1.getHand());
     pl2hnd = cehckHandValue(player2.getHand());
@@ -325,7 +309,7 @@ function showending() {
 }
 
 
-function endingDes(player11, player22) {
+const endingDes = (player11, player22) => {
 
     io.to(player1.getID()).emit('end', {
         enemy: player22,
@@ -342,7 +326,7 @@ function endingDes(player11, player22) {
 }
 
 
-function endGame() {
+const endGame = () => {
     showending();
     redrawInfo(true);
     redrawCards(true);
@@ -356,7 +340,7 @@ function endGame() {
     }, 10000);
 }
 
-function clearjoinRoom(room, room2, namespace = '/') {
+const clearjoinRoom = (room, room2, namespace = '/') => {
     let roomObj = io.nsps[namespace].adapter.rooms[room];
     if (roomObj) {
         // now kick everyone out of this room
@@ -368,7 +352,7 @@ function clearjoinRoom(room, room2, namespace = '/') {
 }
 
 
-function checkCardValue(card) {
+const checkCardValue = (card) => {
 
     let value = 0;
     switch (card.charAt(0)) {
@@ -420,7 +404,7 @@ function checkCardValue(card) {
 
 }
 
-function cehckHandValue(hand) {
+const cehckHandValue = (hand) => {
 
     let value = 0;
     for (let i = 0; i < hand.length; i++) {

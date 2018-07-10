@@ -1,14 +1,14 @@
 //Buttons
-const join = document.getElementById('join'),
+const join  = document.getElementById('join'),
       leave = document.getElementById('leave'),
-      hit = document.getElementById('hit'),
+      hit   = document.getElementById('hit'),
       stand = document.getElementById('stand'),
       //Info
       playerCards = document.getElementById('playerCards'),
-      playerInfo = document.getElementById('playerInfo'),
-      enemyCards = document.getElementById('enemyCards'),
-      enemyInfo = document.getElementById('enemyInfo'),
-      timeLeft = document.getElementById('timeLeft');
+      playerInfo  = document.getElementById('playerInfo'),
+      enemyCards  = document.getElementById('enemyCards'),
+      enemyInfo   = document.getElementById('enemyInfo'),
+      timeLeft    = document.getElementById('timeLeft');
 let time = 15, myVar; //myVar = setInterval(myTimer, 1000);
 
 
@@ -107,25 +107,25 @@ socket.on('redrawCards', data => {
 });
 
 socket.on('redrawInfo', data => {
-
+      
       if (data.waitingroom && !data.endresult) {
-            enemyInfo.innerHTML = 'PLAYER 2 CARD VALUE: X + ' + data.enemycardvalue;
+            enemyInfo.innerHTML  = 'PLAYER 2 CARD VALUE: X + ' + data.enemycardvalue;
             playerInfo.innerHTML = 'PLAYER 1 CARD VALUE: X + ' + data.playercardvalue;
       } else if (!data.waitingroom && !data.endresult) {
-            enemyInfo.innerHTML = 'ENEMY CARD VALUE: X + ' + data.enemycardvalue;
-            playerInfo.innerHTML = 'PLAYER CARD VALUE: ' + data.playercardvalue;
+            enemyInfo.innerHTML  = 'ENEMY CARD VALUE: X + '    + data.enemycardvalue;
+            playerInfo.innerHTML = 'PLAYER CARD VALUE: '       + data.playercardvalue;
       } else if (!data.waitingroom && data.endresult) {
-            enemyInfo.innerHTML = 'ENEMY CARD VALUE: ' + data.enemycardvalue;
-            playerInfo.innerHTML = 'PLAYER CARD VALUE: ' + data.playercardvalue;
+            enemyInfo.innerHTML  = 'ENEMY CARD VALUE: '        + data.enemycardvalue;
+            playerInfo.innerHTML = 'PLAYER CARD VALUE: '       + data.playercardvalue;
             setTimeout(() => {
-                  enemyInfo.innerHTML = '';
+                  enemyInfo.innerHTML  = '';
                   playerInfo.innerHTML = '';
             }, 10000);
       } else if (data.waitingroom && data.endresult) {
-            enemyInfo.innerHTML = 'PLAYER 2 CARD VALUE: ' + data.enemycardvalue;
-            playerInfo.innerHTML = 'PLAYER 1 CARD VALUE: ' + data.playercardvalue;
+            enemyInfo.innerHTML  = 'PLAYER 2 CARD VALUE: '     + data.enemycardvalue;
+            playerInfo.innerHTML = 'PLAYER 1 CARD VALUE: '     + data.playercardvalue;
             setTimeout(() => {
-                  enemyInfo.innerHTML = '';
+                  enemyInfo.innerHTML  = '';
                   playerInfo.innerHTML = '';
             }, 10000);
       }
@@ -133,7 +133,7 @@ socket.on('redrawInfo', data => {
 
 
 
-function myTimer() {
+const myTimer = () => {
 
       document.getElementById("timeLeft").innerHTML = 'TIME LEFT: ' + time--;
       if (time == -1) {
@@ -148,60 +148,48 @@ socket.on('clear', () => {
 })
 
 
-function showFacedDown(position) {
-
-      let img = document.createElement("img");
-      img.src = "img/cards/Different-BikeBack.png";
-      img.width = 90;
+const showFacedDown = (position) => {
+      let img    = document.createElement("img");
+      img.src    = "img/cards/Different-BikeBack.png";
+      img.width  = 90;
       img.height = 140;
-      img.id = "cardImage";
+      img.id     = "cardImage";
       document.getElementById(position).appendChild(img);
-
 }
 
-function disableButton(elem) {
-
-      elem.disabled = true;
+const disableButton = (elem) =>{
+      elem.disabled         = true;
       elem.style.background = 'grey';
-      elem.style.cursor = 'default';
-
+      elem.style.cursor     = 'default';
 }
 
-function enableButton(elem) {
-
-      elem.disabled = false;
+const enableButton = (elem) => {
+      elem.disabled         = false;
       elem.style.background = 'rgba(76, 76, 216, 0.95)';
-      elem.style.cursor = 'pointer';
-
+      elem.style.cursor     = 'pointer';
 }
 
-function showWinner(elem) {
-
+const showWinner = (elem) => {
       elem.style.background = 'rgba(126, 255, 51, 0.658)';
-
 }
 
-function showLoser(elem) {
-
+const showLoser = (elem) => {
       elem.style.background = 'rgba(255, 35, 35, 0.753)';
-
 }
 
-function showTie(elem) {
+const showTie = (elem) => {
 
       elem.style.background = 'rgba(251, 255, 0, 0.733)';
 
 }
 
-function revertshow() {
-
+const revertshow = () => {
       playerCards.style.background = 'rgba(206, 206, 206 , 0.95)';
-      enemyCards.style.background = 'rgba(232, 232, 232 , 0.95)';
-
+      enemyCards.style.background  = 'rgba(232, 232, 232 , 0.95)';
 }
 
 
-function displayHand(hand, position) {
+const displayHand = (hand, position) => {
 
       if (Array.isArray(hand)) {
             for (let i = 0; i < hand.length; i++) {
@@ -209,26 +197,21 @@ function displayHand(hand, position) {
             }
       } else
             imageShow(hand, position);
-
 }
 
-function imageShow(card, position) {
-
-      let img = document.createElement("img");
-      img.src = checkSrc(card);
-      img.width = 90;
+const imageShow = (card, position) => {
+      let img    = document.createElement("img");
+      img.src    = checkSrc(card);
+      img.width  = 90;
       img.height = 140;
-      img.id = "cardImage";
-      //img.style.filter = "alpha(opacity = 0)";
+      img.id     = "cardImage";
       document.getElementById(position).appendChild(img);
-
 }
 
 
-function checkSrc(card) {
+const checkSrc = (card) => {
       let value;
       switch (card.charAt(1)) {
-
             case "D":
                   value = checkCard(card, "diamonds");
                   break;
@@ -246,7 +229,7 @@ function checkSrc(card) {
 }
 
 
-function checkCard(card, type) {
+const checkCard = (card, type) => {
       let value;
       switch (card.charAt(0)) {
 

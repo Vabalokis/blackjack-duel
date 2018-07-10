@@ -1,11 +1,11 @@
 
 let socket = io.connect('https://hidden-caverns-22423.herokuapp.com/'); //for heraku deployment
 
-const output = document.getElementById('output'),
+const output  = document.getElementById('output'),
     outputwin = document.getElementById('output-window'),
-    name = document.getElementById('name'),
-    message = document.getElementById('message'),
-    btn = document.getElementById('send');
+    name      = document.getElementById('name'),
+    message   = document.getElementById('message'),
+    btn       = document.getElementById('send');
 
 
 btn.addEventListener('click', () => {
@@ -20,9 +20,9 @@ btn.addEventListener('click', () => {
 
 socket.on('chat', data => {
 
-    let today = new Date(),
-        h = doubleCheck(today.getHours()),
-        m = doubleCheck(today.getMinutes()),
+    let today   = new Date(),
+        h       = doubleCheck(today.getHours()),
+        m       = doubleCheck(today.getMinutes()),
         meclass = '';
 
     if (data.isMe == true) {
@@ -34,18 +34,14 @@ socket.on('chat', data => {
 });
 
 
-function doubleCheck(dateObject) {
-
+const doubleCheck = (dateObject) => {
     if (dateObject < 10) {
         return "0" + dateObject;
     }
     return dateObject;
-
 }
 
-function updateScroll() {
-
+const updateScroll = () => {
     outputwin.scrollTop = outputwin.scrollHeight;
-
 }
 
